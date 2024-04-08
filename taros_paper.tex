@@ -1,0 +1,134 @@
+\documentclass[runningheads]{llncs}
+%
+\usepackage{graphicx}
+\usepackage{doi}
+\usepackage{xcolor}
+
+\newcommand\incomplete[1]{\textcolor{red}{#1}}
+
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following line
+% to display URLs in blue roman font according to Springer's eBook style:
+% \renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\begin{document}
+%
+\title{Highly Scalable Frontier-Led Chain Formations for Search and Exploration Problems}
+%
+\titlerunning{Highly Scalable Frontier-Led Chain Formations}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{Danny Roberts\inst{1} \and
+Dr. Simos Gerasimou\inst{1} \and
+Dr. Alan Millard\inst{1}}
+
+\institute{
+    Department of Computer Science,
+    University of York, 
+    York, UK
+    \email{danny.roberts@york.ac.uk}\\
+    \email{simos.gerasimou@york.ac.uk}\\
+    \email{alan.millard@york.ac.uk}\\
+}
+
+\maketitle 
+% typeset the header of the contribution
+%
+\begin{abstract}
+Building upon the frontier-led swarming concept introduced by Tran\cite{tran2022}, this paper presents a novel adaptation that integrates a rigid chain formation with traditional flocking for the exploration and coverage of unknown environments. This approach augments Tran's method by guiding flocking dynamics into more structured outcomes through a rigid chain formation, maintaining the system's robustness to agent failure while achieving near-linear scalability. The agents in this system identify and maintain explicit links with their immediate neighbours, allowing for a more organized exploration strategy that complements the frontier-led approach. \incomplete{Summarize results here}. Future work will explore the capability of the chain to intelligently navigate around obstacles by splitting and reuniting, further solidifying this method's potential in applications such as humanitarian demining and ocean garbage clean-up. This research aims to offer a new perspective on the integration of rigid formations within swarm robotics, proposing a balanced approach between structured organization and the adaptive and scalable qualities of swarms.
+
+\keywords{Swarm Robotics \and Scalability \and }
+\end{abstract}
+
+
+\section{Introduction}
+% Background & Context
+Swarm intelligence, inspired by the collective behaviours of natural systems like colonies of ants and flocks of birds \cite{garnier2007}, aims to capture the powerful emergent behaviours that come with a system made up of simple agents\cite{mataric1995}.
+Leveraging the principles of decentralized control and local interaction, swarm robotic systems offer unparalleled scalability, robustness, and flexibility, making them ideal for complex tasks ranging from environmental monitoring to search and rescue operations \cite{hamann2018,ijspeert2001}. 
+Despite these advantages, challenges remain in maintaining effective communication and cohesive formations without prior knowledge of the terrain, a critical factor in the efficiency and success of swarm-based missions \cite{xu2014}. 
+This research builds upon the foundation of frontier-led swarming, introduced by Tran et al. \cite{tran2022}, to address these challenges through the novel integration of rigid chain formations, aiming to enhance both the structural integrity and scalability of swarm operations.
+
+% Related Work
+    % Part 1 - Swarm algorithms, formations etc.
+
+    % Part 2 - Non-swarm area coverage & formations
+
+% Research Gap & objectives
+    % Swarm dynamics COMBINED with rigid formation
+    % obj: Enhanced scalability from formations that require leaders or central communication
+    % Algorithms used etc.
+
+% Paper structure
+    % Just list the sections
+
+% ---=== Algorithm ===---
+
+\section{Proposed Algorithm}
+Algorithm is split into 3 behaviours\dots
+
+\subsection{Chain Formation}
+If a robot is not currently part of a well-defined chain, it will attempt to form or join one\dots
+
+\subsection{Partner Selection \& Switching}
+Once a robot is in a chain-like arrangement it will attempt to select partners for its 
+
+\subsection{Propagation}
+When a robot is in a satisfactory chain, it will attempt to move in its commanded direction while maintaining the chain formation via spring forces\dots
+
+
+% ---=== Methodology ===---
+\pagebreak
+\section{Experimental Methodology}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Images/Example Environments.jpg}
+    \caption{Environments of varying complexity used for testing. Blue area indicates starting area of the swarm \incomplete{This image is obviously just a mock-up, I'll make a proper diagram later}}
+    \label{fig:example environments}
+    \end{figure}
+
+\subsection{Algorithms for Comparison}
+
+
+
+\subsection{Treatments}
+
+\subsection{Data Collected}
+The main data collection target for these simulations will be \textbf{time to explore the environment}. This will be split into sub-measurements (80\%, 95\% and 99\% coverage), as well as an overall exploration rate value in $m^2/s$ collected throughout the simulation. These values will give a clear picture of how the system performs throughout its runtime rather than simply how long complete coverage takes. This is advantageous as complete coverage time can vary wildly if a small amount of space (in a corner for example) is missed on the first pass, and faster but slightly less complete coverage can be acceptable trade-off depending on the scenario. In addition, several other non-goal metrics will be collected:
+
+\paragraph{Messages passed and communication bandwidth} are crucial metrics when it comes to scalability of the system, as in many systems message passing bandwidth of a given agent will scale $O(N^2)$ where N is the number of agents. A scalable system should have a message passing bandwidth of $O(N)$ to allow for unlimited expansion.
+
+\paragraph{Message passing distances} directly determine the amount of radio power required to send a message, and crucially this also scales with $O(D^2)$. Therefore, keeping distance low has a significant impact on required transmit power.
+
+\paragraph{There's more...}
+
+
+\newpage
+\section{Results}
+
+\begin{table}
+\caption{Time to complete exploration (99\%)}\label{tab1}
+\begin{tabular}{|l|l|l|l|}
+\hline
+Algorithm &  Open Environment & Simple Obstacles & Complex Environment\\
+\hline
+My Algo             & 82s  & ... & ...\\
+Tran-like           & 91s  & ... & ...\\
+Naive algo          & 120s & ... & ...\\
+Theoretical optima  & 40s  & ... & ...\\
+\hline
+\end{tabular}
+\end{table}
+
+I'd describe the results here if I had any that weren't made up
+
+
+Maybe I should just focus on the open or the simple environment for now, so I can stick to analysing scalability?
+
+% ---=== Bibliography ===---
+
+\bibliographystyle{splncs04}
+\bibliography{Library}
+\end{document}

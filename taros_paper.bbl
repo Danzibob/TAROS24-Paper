@@ -1,0 +1,27 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{garnier2007}
+Garnier, S., Gautrais, J., Theraulaz, G.: The biological principles of swarm intelligence. Swarm Intelligence  \textbf{1}(1),  3--31 (Jun 2007)
+
+\bibitem{hamann2018}
+Hamann, H.: Superlinear {{Scalability}} in {{Parallel Computing}} and {{Multi-robot Systems}}: {{Shared Resources}}, {{Collaboration}}, and~{{Network Topology}}. In: Berekovic, M., Buchty, R., Hamann, H., Koch, D., Pionteck, T. (eds.) Architecture of {{Computing Systems}} -- {{ARCS}} 2018. pp. 31--42. Springer International Publishing, Cham (2018)
+
+\bibitem{ijspeert2001}
+Ijspeert, A.J., Martinoli, A., Billard, A., Gambardella, L.M.: Collaboration {{Through}} the {{Exploitation}} of {{Local Interactions}} in {{Autonomous Collective Robotics}}: {{The Stick Pulling Experiment}}. Autonomous Robots  \textbf{11}(2),  149--171 (Sep 2001)
+
+\bibitem{mataric1995}
+Matari{\'c}, M.J.: From {{Local Interactions}} to {{Collective Intelligence}}. In: Steels, L. (ed.) The {{Biology}} and {{Technology}} of {{Intelligent Autonomous Agents}}. pp. 275--295. Springer, Berlin, Heidelberg (1995)
+
+\bibitem{reynolds1987}
+Reynolds, C.W.: Flocks, herds and schools: {{A}} distributed behavioral model. ACM SIGGRAPH Computer Graphics  \textbf{21}(4),  25--34 (Aug 1987)
+
+\bibitem{tran2022}
+Tran, V.P., Garratt, M.A., Kasmarik, K., Anavatti, S.G., Abpeikar, S.: Frontier-led swarming: {{Robust}} multi-robot coverage of unknown environments. Swarm and Evolutionary Computation  \textbf{75},  101171 (Dec 2022)
+
+\bibitem{xu2014}
+Xu, D., Zhang, X., Zhu, Z., Chen, C., Yang, P.: Behavior-{{Based Formation Control}} of {{Swarm Robots}}. Mathematical Problems in Engineering  \textbf{2014},  e205759 (Jun 2014)
+
+\end{thebibliography}

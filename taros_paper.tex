@@ -1,8 +1,10 @@
 \documentclass[runningheads]{llncs}
-%
 \usepackage{graphicx}
 \usepackage{doi}
 \usepackage{xcolor}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{multicol}
 
 \newcommand\incomplete[1]{\textcolor{red}{#1}}
 
@@ -16,11 +18,8 @@
 \begin{document}
 %
 \title{Highly Scalable Frontier-Led Chain Formations for Search and Exploration Problems}
-%
 \titlerunning{Highly Scalable Frontier-Led Chain Formations}
-% If the paper title is too long for the running head, you can set
-% an abbreviated paper title here
-%
+
 \author{Danny Roberts\inst{1} \and
 Dr. Simos Gerasimou\inst{1} \and
 Dr. Alan Millard\inst{1}}
@@ -35,12 +34,12 @@ Dr. Alan Millard\inst{1}}
 }
 
 \maketitle 
-% typeset the header of the contribution
-%
+
 \begin{abstract}
 Building upon the frontier-led swarming concept introduced by Tran\cite{tran2022}, this paper presents a novel adaptation that integrates a rigid chain formation with traditional flocking for the exploration and coverage of unknown environments. This approach augments Tran's method by guiding flocking dynamics into more structured outcomes through a rigid chain formation, maintaining the system's robustness to agent failure while achieving near-linear scalability. The agents in this system identify and maintain explicit links with their immediate neighbours, allowing for a more organized exploration strategy that complements the frontier-led approach. \incomplete{Summarize results here}. Future work will explore the capability of the chain to intelligently navigate around obstacles by splitting and reuniting, further solidifying this method's potential in applications such as humanitarian demining and ocean garbage clean-up. This research aims to offer a new perspective on the integration of rigid formations within swarm robotics, proposing a balanced approach between structured organization and the adaptive and scalable qualities of swarms.
 
-\keywords{Swarm Robotics \and Scalability \and }
+\keywords{Swarm Robotics \and Scalability \and Formations}
+
 \end{abstract}
 
 
@@ -49,7 +48,7 @@ Building upon the frontier-led swarming concept introduced by Tran\cite{tran2022
 Swarm intelligence, inspired by the collective behaviours of natural systems like colonies of ants and flocks of birds \cite{garnier2007}, aims to capture the powerful emergent behaviours that come with a system made up of simple agents\cite{mataric1995}.
 Leveraging the principles of decentralized control and local interaction, swarm robotic systems offer unparalleled scalability, robustness, and flexibility, making them ideal for complex tasks ranging from environmental monitoring to search and rescue operations \cite{hamann2018,ijspeert2001}. 
 Despite these advantages, challenges remain in maintaining effective communication and cohesive formations without prior knowledge of the terrain, a critical factor in the efficiency and success of swarm-based missions \cite{xu2014}. 
-This research builds upon the foundation of frontier-led swarming, introduced by Tran et al. \cite{tran2022}, to address these challenges through the novel integration of rigid chain formations, aiming to enhance both the structural integrity and scalability of swarm operations.
+This research builds upon the foundation of "frontier-led swarming", introduced by Tran et al. \cite{tran2022}, to address these challenges through the novel integration of rigid chain formations, aiming to enhance both the structural integrity and scalability of swarm operations.
 
 % Related Work
     % Part 1 - Swarm algorithms, formations etc.
@@ -67,12 +66,37 @@ This research builds upon the foundation of frontier-led swarming, introduced by
 % ---=== Algorithm ===---
 
 \section{Proposed Algorithm}
-Algorithm is split into 3 behaviours\dots
+\subsection{Establishing the Basis}
+\subsubsection{Flocking Forces}
+Firstly let us outline the forces each agent will experience. Suppose a group of $N$ agents $A^1, A^2...A^N$. At each time step $t$ a force is exerted on an agent based on the current state of its nearby neighbours. To implement Reynolds Boids \cite{reynolds1987}, we need the following forces per agent $A^i$, based on its neighbours positions $p$ and velocities $v$:\\
+\indent(\ref{eq:cohesion})\nobreakspace\textbf{Cohesion} 
+    (pull towards the centre of neighbours) \\
+\indent(\ref{eq:alignment})\nobreakspace\textbf{Alignment} 
+    (pull towards matching the velocity of neighbours)\\
+\indent(\ref{eq:separation})\nobreakspace\textbf{Separation} 
+    (push away from neighbours that are too close).
 
-\subsection{Chain Formation}
-If a robot is not currently part of a well-defined chain, it will attempt to form or join one\dots
+\begin{multicols}{2}
+    \begin{equation}
+        F^i_{coh} = (\bar{p} - p^i) \label{eq:cohesion}
+    \end{equation}
+    \begin{equation}
+        F^i_{ali} = (\bar{v} - v^i) \label{eq:alignment}
+    \end{equation}
+    \break
+    \begin{equation}
+        F^i_{sep} = \sum_{j \in N_i} \frac{p^i - p^j}{\|p^i - p^j\|^3}
+        \label{eq:separation}
+    \end{equation}
+\end{multicols}
 
-\subsection{Partner Selection \& Switching}
+\subsubsection{Goal Forces}
+Frontier-led Swarming\cite{tran2022} combines basic flocking dynamics with a frontier generated from a local map. This gives agents a goal in addition to maintaining the flock. How this goal point is generated is best left for their paper to describe, but as a force it can be described similarly to the cohesion force - with the agent being pulled towards that point. We will call this force $F_{frontier}$.
+
+\subsection{Novelty: Chain formation}
+The goal of a chain formation is to spread out across a frontier, such that the swarm as a whole can move in formation all covering new ground at once. In order to encourage spreading out along the frontier, we can edit the original cohesion, alignment and separation equations to favour an agent moving \textit{alongside} its neighbours rather than ahead or behind them.
+
+\subsection{Explicit Partner Selection}
 Once a robot is in a chain-like arrangement it will attempt to select partners for its 
 
 \subsection{Propagation}

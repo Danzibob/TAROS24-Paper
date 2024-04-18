@@ -50,11 +50,6 @@ Leveraging the principles of decentralized control and local interaction, swarm 
 Despite these advantages, challenges remain in maintaining effective communication and cohesive formations without prior knowledge of the terrain, a critical factor in the efficiency and success of swarm-based missions \cite{xu2014}. 
 This research builds upon the foundation of "frontier-led swarming", introduced by Tran et al. \cite{tran2022}, to address these challenges through the novel integration of rigid chain formations, aiming to enhance both the structural integrity and scalability of swarm operations.
 
-% Related Work
-    % Part 1 - Swarm algorithms, formations etc.
-
-    % Part 2 - Non-swarm area coverage & formations
-
 % Research Gap & objectives
     % Swarm dynamics COMBINED with rigid formation
     % obj: Enhanced scalability from formations that require leaders or central communication
@@ -70,51 +65,95 @@ This research builds upon the foundation of "frontier-led swarming", introduced 
 % Short summary of the results(?)
 % List of key contribuions and paper structure
 
-% Related work as a whole section
+\section{Related Work}
+\subsection{Swarm Algorithms}
+    % Part 1 - Swarm algorithms, formations etc.
+
+\subsection{Area coverage / search / exploration}
+    % Part 2 - Non-swarm area coverage & formations
 
 
 % ---=== Algorithm ===---
 
 \section{Proposed Algorithm}
 \subsection{Establishing the Basis}
+Consider a set of $n$ agents $A^1, A^2...A^n$ where $p^i$ and $v^i$ represent the position and velocity of $A^i$.
+We define a neighbour as another agent within a distance $d_x$ of the agent in question, with the set of all neighbours of $A^i$ represented by $N^i_x$:
+
+\begin{equation}
+    N^i_x = \{A^j \in A \setminus \{A^i\} : \|p^i - p^j\| \leq d_x\}
+\end{equation}
+
 \subsubsection{Flocking Forces}
-Firstly let us outline the forces each agent will experience. Suppose a group of $N$ agents $A^1, A^2...A^N$. At each time step $t$ a force is exerted on an agent based on the current state of its nearby neighbours. To implement Reynolds Boids \cite{reynolds1987}, we need the following forces per agent $A^i$, based on its neighbours positions $p$ and velocities $v$:\\
+At each time step $t$ a force is exerted on an agent based on the current state of its nearby neighbours. 
+To implement Reynolds Boids \cite{reynolds1987}, we need the following forces per agent $A^i$. 
+Each force has its own proximity radius $d_i$; e.g. $d_{coh}$ represents the cohesion radius.
+
 \indent(\ref{eq:cohesion})\nobreakspace\textbf{Cohesion} 
-    (pull towards the centre of neighbours) \\
+    (pull towards the average position of its neighbours) \\
 \indent(\ref{eq:alignment})\nobreakspace\textbf{Alignment} 
-    (pull towards matching the velocity of neighbours)\\
+    (pull towards matching the velocity of its neighbours)\\
 \indent(\ref{eq:separation})\nobreakspace\textbf{Separation} 
     (push away from neighbours that are too close).
 
+\begin{equation}
+    F^i_{coh} = (\frac{1}{|N^i_{\text{coh}}|} \sum_{j \in N^i_{\text{coh}}} p^j) - p^i \label{eq:cohesion}
+\end{equation}
+\begin{equation}
+    F^i_{ali} = (\frac{1}{|N^i_{\text{ali}}|} \sum_{j \in N^i_{\text{ali}}} v^j) - v^i \label{eq:alignment}
+\end{equation}
+\begin{equation}
+    F^i_{sep} = \sum_{j \in N^i_{sep}} \frac{p^i - p^j}{\|p^i - p^j\|^3} \label{eq:separation}
+\end{equation}
+
+\subsubsection{Goal Forces}
+"Frontier-led Swarming" \cite{tran2022} combines basic flocking dynamics with a frontier generated from a local map.
+This gives agents a goal in addition to maintaining the flock. 
+Tran's work demonstrates an algorithm for generating this frontier cell, which we build on in our extension of their algorithm.
+By subtracting an agent's current position from the fontier goal point $p^goal$, we can calculate a goal force $F_{goal}$ \ref{eq:goal} for each agent.
+
+\begin{equation}
+    F^i_{goal} = p^{goal} - p^i \label{eq:goal}
+\end{equation}
+
+\subsection{Chain formation}
+The goal of a chain formation is to spread out across a frontier, such that the swarm as a whole can move in formation all covering new ground at once. In order to encourage spreading out in a line vs a cloud, we can apply a force to agents that are in front or behind of their peers. By using the dot product of an agent's velocity (or vector representing their heading) we get a value representing how far ahead or behind of an agent's heading its peer is. The average of these forces for all neighbours along with the other flocking forces will "flatten" a flock into a line or chain formation.
+
+\begin{equation}
+    F^i_{chn} = \frac{v^i}{|N^i_{\text{chn}}|} (\sum_{j \in N^i_{chn}} \hat{p^j} \cdot \hat{v^i})
+\end{equation}
+
+
+% We'll see if any of this is actually even needed to achieve the results we want
+
+% \subsection{Explicit Partner Selection}
+% Once an agent is in a chain-like arrangement it will attempt to select partners for its 
+
+% \subsection{Propagation}
+% When a robot is in a satisfactory chain, it will attempt to move in its commanded direction while maintaining the chain formation via spring forces\dots
+
+
+\subsection{Final Algorithm}
+When running the algorithm we combine the forces above, using two parameters for each force: $d_x$ for the radius of influence of that force, and $w_x$ for the weighting of that force. These weights and distances will need to be tuned for specific types of robot with different properties such as maximum speed and acceleration. Furthermore, depending on the current goal of the system, these weights and distances could be dynamically changed to close in on a target or spread out and explore a larger area. After the force vector has been applied to the velocity, 
+
+\begin{equation}
+    F^i_t = w_{coh}F^i_{coh} + w_{ali}F^i_{ali} + w_{sep}F^i_{sep} + w_{goal}F^i_{goal} + w_{chn}F^i_{chn}
+\end{equation}
+
 \begin{multicols}{2}
     \begin{equation}
-        F^i_{coh} = (\bar{p} - p^i) \label{eq:cohesion}
+        v^i_{t+1} = v^i_t + F^i_t
     \end{equation}
+
     \begin{equation}
-        F^i_{ali} = (\bar{v} - v^i) \label{eq:alignment}
-    \end{equation}
-    \break
-    \begin{equation}
-        F^i_{sep} = \sum_{j \in N_i} \frac{p^i - p^j}{\|p^i - p^j\|^3}
-        \label{eq:separation}
+        p^i_{t+1} = p^i_t + v^i_t
     \end{equation}
 \end{multicols}
 
-\subsubsection{Goal Forces}
-Frontier-led Swarming\cite{tran2022} combines basic flocking dynamics with a frontier generated from a local map. This gives agents a goal in addition to maintaining the flock. How this goal point is generated is best left for their paper to describe, but as a force it can be described similarly to the cohesion force - with the agent being pulled towards that point. We will call this force $F_{frontier}$.
-
-\subsection{Novelty: Chain formation}
-The goal of a chain formation is to spread out across a frontier, such that the swarm as a whole can move in formation all covering new ground at once. In order to encourage spreading out along the frontier, we can edit the original cohesion, alignment and separation equations to favour an agent moving \textit{alongside} its neighbours rather than ahead or behind them.
-
-\subsection{Explicit Partner Selection}
-Once a robot is in a chain-like arrangement it will attempt to select partners for its 
-
-\subsection{Propagation}
-When a robot is in a satisfactory chain, it will attempt to move in its commanded direction while maintaining the chain formation via spring forces\dots
+\textit{\small{NB: Velocity is capped. If $||v^i|| > v_{cap}$ then the magnitude will be set to $v_{cap}$}}
 
 
 % ---=== Methodology ===---
-\pagebreak
 \section{Experimental Methodology}
 \begin{figure}[h]
     \centering
